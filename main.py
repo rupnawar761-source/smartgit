@@ -29,12 +29,15 @@ def do(intent: str):
             console.print("[red]Aborted.[/red]")
             raise typer.Abort()
             
-        # 4. Execute the commands using subprocess
+        # 4. Execute the commands using subprocess with Windows Shell enabled
         for cmd in sequence.commands:
             full_cmd_list = [cmd.command] + cmd.args
-            console.print(f"[dim]Running: {' '.join(full_cmd_list)}...[/dim]")
             
-            result = subprocess.run(full_cmd_list, capture_output=True, text=True)
+            # This is the line that fixes the Windows file execution error!
+            windows_safe_command = " ".join(full_cmd_list)
+            console.print(f"[dim]Running: {windows_safe_command}...[/dim]")
+            
+            result = subprocess.run(windows_safe_command, shell=True, capture_output=True, text=True)
             
             if result.returncode == 0:
                 console.print(f"[green]Success![/green]")
