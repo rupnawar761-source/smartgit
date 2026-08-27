@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartGit: AI-Powered Git CLI</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #1e1e1e;
+    color: #f0f0f0;
+    overflow: hidden;
+  }
+  .slide-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+  .slide {
+    display: none;
+    width: 80%;
+    max-width: 1000px;
+    height: 70%;
+    background: #252526;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    flex-direction: column;
+    justify-content: center;
+    border-left: 5px solid #4CAF50;
+  }
+  .slide.active {
+    display: flex;
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  h1, h2 { color: #4CAF50; margin-bottom: 20px; }
+  ul { font-size: 1.2rem; line-height: 1.8; }
+  li { margin-bottom: 15px; }
+  code { background: #121212; padding: 4px 8px; border-radius: 4px; font-family: monospace; color: #d4d4d4; }
+  .controls {
+    position: absolute;
+    bottom: 30px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+  button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  button:hover { background-color: #45a049; }
+  .slide-counter { position: absolute; bottom: 35px; right: 40px; font-size: 1.2rem; color: #888; }
+</style>
+</head>
+<body>
+
+<div class="slide-container">
+  
+  <!-- Slide 1 -->
+  <div class="slide active">
+    <h1>SmartGit</h1>
+    <h2>An AI-Powered Natural Language Git CLI</h2>
+    <p>Translating human intent into strict Git execution using Local LLMs.</p>
+  </div>
+
+  <!-- Slide 2 -->
+  <div class="slide">
+    <h2>1. The Problem Statement</h2>
+    <ul>
+      <li>Git is powerful but relies on rigid, complex syntax.</li>
+      <li>Developers often break flow state to look up specific flags and commands.</li>
+      <li>Mistakes in commands like <code>git reset</code> or <code>git rebase</code> can cause major issues.</li>
+      <li>Need a bridge between casual natural language and exact version control.</li>
+    </ul>
+  </div>
+
+  <!-- Slide 3 -->
+  <div class="slide">
+    <h2>2. What is SmartGit?</h2>
+    <ul>
+      <li>A locally-hosted command line tool that acts as an AI Git assistant.</li>
+      <li>Takes plain English inputs like <i>"save my work and upload it"</i>.</li>
+      <li>Translates inputs directly into a strict JSON sequence of Git commands.</li>
+      <li>Runs natively in the terminal without requiring external cloud API calls.</li>
+    </ul>
+  </div>
+
+  <!-- Slide 4 -->
+  <div class="slide">
+    <h2>3. How It Works (Execution Flow)</h2>
+    <ul>
+      <li><b>Step 1 (Input):</b> User runs global command: <code>smartgit "undo last commit"</code>.</li>
+      <li><b>Step 2 (Inference):</b> The prompt is sent to a fine-tuned local LLM (Qwen2.5-Coder).</li>
+      <li><b>Step 3 (Parsing):</b> The tool extracts the structured JSON command sequence.</li>
+      <li><b>Step 4 (Guardrail):</b> Terminal displays proposed commands and asks <code>[y/N]</code>.</li>
+      <li><b>Step 5 (Execution):</b> Upon approval, standard OS Git commands execute with feedback.</li>
+    </ul>
+  </div>
+
+  <!-- Slide 5 -->
+  <div class="slide">
+    <h2>4. System Architecture</h2>
+    <ul>
+      <li><b>Core Language:</b> Python (Native Windows execution).</li>
+      <li><b>Inference Engine:</b> Ollama (Running local lightweight models).</li>
+      <li><b>Base Model:</b> Qwen2.5-Coder-1.5B (Open-weights, optimized for code).</li>
+      <li><b>CLI Integration:</b> Subprocess OS execution wrapped in an interactive shell interface.</li>
+    </ul>
+  </div>
+
+  <!-- Slide 6 -->
+  <div class="slide">
+    <h2>5. The Dataset Strategy</h2>
+    <ul>
+      <li>Synthetic data generation utilizing Python.</li>
+      <li>Created a highly curated <code>dataset.jsonl</code> with 400 targeted examples.</li>
+      <li>Mixed standard verbs ("save", "upload") with natural nouns ("my work", "changes").</li>
+      <li>Target schema enforced strict JSON mapping: <code>{"commands": [{"command": "git", "args": ["add", "."]}]}</code>.</li>
+    </ul>
+  </div>
+
+  <!-- Slide 7 -->
+  <div class="slide">
+    <h2>6. Local Model Fine-Tuning (QLoRA)</h2>
+    <ul>
+      <li>Trained entirely locally using an NVIDIA RTX 4050 (6GB VRAM).</li>
+      <li><b>Library:</b> Unsloth (Highly optimized for consumer GPUs).</li>
+      <li><b>Technique:</b> 4-bit Quantization (QLoRA) compressing the model footprint.</li>
+      <li>Trained a targeted LoRA adapter over 60 steps to natively output Git JSON formats without heavy prompting.</li>
+    </ul>
+  </div>
+
+  <!-- Slide 8 -->
+  <div class="slide">
+    <h2>7. Overcoming Engineering Challenges</h2>
+    <ul>
+      <li><b>Dependency Hell:</b> Encountered major PyTorch, Unsloth, and CUDA version conflicts.</li>
+      <li><b>Root Cause:</b> Python 3.14 incompatibility with pre-built CUDA tensors.</li>
+      <li><b>Solution:</b> Strategically downgraded the virtual environment to Python 3.12.</li>
+      <li>Leveraged CUDA 12.4 index to ensure stable GPU acceleration during training.</li>
+    </ul>
+  </div>
+
+  <!-- Slide 9 -->
+  <div class="slide">
+    <h2>8. Global OS Integration</h2>
+    <ul>
+      <li>Transitioned from a local script to a globally available system command.</li>
+      <li>Configured Windows PowerShell to recognize the executable anywhere.</li>
+      <li>Allows seamless execution (<code>smartgit</code>) inside any initialized repository folder across the drive.</li>
+    </ul>
+  </div>
+
+  <!-- Slide 10 -->
+  <div class="slide">
+    <h2>9. Safety & Guardrails</h2>
+    <ul>
+      <li><b>No Blind Execution:</b> AI outputs are fundamentally unpredictable.</li>
+      <li><b>User-in-the-loop:</b> Built a hard stop requiring manual confirmation before any state-altering actions.</li>
+      <li><b>Directory Awareness:</b> Fails gracefully with helpful error messages if run outside a valid repository.</li>
+    </ul>
+  </div>
+
+  <!-- Slide 11 -->
+  <div class="slide">
+    <h2>10. Future Machine Learning Upgrades</h2>
+    <ul>
+      <li><b>Repository RAG (Retrieval-Augmented Generation):</b> Hooking up a local Vector Database.</li>
+      <li>Enable the model to remember past commits and learn specific naming conventions.</li>
+      <li>Multi-branch automated conflict resolution strategies.</li>
+    </ul>
+  </div>
+
+  <!-- Slide 12 -->
+  <div class="slide">
+    <h2>Conclusion</h2>
+    <p>A complete journey from prompt engineering and system integration to local deep learning, fine-tuning, and robust dependency management.</p>
+    <h3 style="margin-top: 40px; color: white;">Q & A</h3>
+  </div>
+
+  <div class="controls">
+    <button onclick="changeSlide(-1)">&#10094; Previous</button>
+    <button onclick="changeSlide(1)">Next &#10095;</button>
+  </div>
+  <div class="slide-counter" id="counter">1 / 12</div>
+
+</div>
+
+<script>
+  let currentSlide = 0;
+  const slides = document.querySelectorAll('.slide');
+  const counter = document.getElementById('counter');
+
+  function showSlide(index) {
+    slides.forEach(slide => slide.classList.remove('active'));
+    if (index >= slides.length) currentSlide = 0;
+    if (index < 0) currentSlide = slides.length - 1;
+    slides[currentSlide].classList.add('active');
+    counter.innerText = (currentSlide + 1) + " / " + slides.length;
+  }
+
+  function changeSlide(direction) {
+    currentSlide += direction;
+    showSlide(currentSlide);
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') changeSlide(1);
+    if (e.key === 'ArrowLeft') changeSlide(-1);
+  });
+</script>
+
+</body>
+</html>

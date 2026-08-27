@@ -1,0 +1,19 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Model artifacts (large binary files — don't belong in git)
+lora_model/
+smartgit_qwen_gguf_gguf/
+outputs/
+*.gguf
+*.safetensors
+
+# Training data (regeneratable via generate_data.py)
+git_dataset.jsonl
+
+# Build artifacts
+build/
+dist/
+*.spec.bak
