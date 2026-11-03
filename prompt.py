@@ -29,4 +29,8 @@ CRITICAL RULES:
 - "stash": `git stash`. "restore stash": `git stash pop`.
 - "undo last commit, keep changes": `git reset --soft HEAD~1`. "unstage": `git restore --staged .`.
 - "remote url": `git remote -v`. "initialize repo": `git init`.
+- "connect to URL": `git remote add origin URL`. "change remote to URL": `git remote set-url origin URL`.
+- "clone URL": `git clone URL`. "rename branch to main": `git branch -M main`. "first push": `git push -u origin main`.
+- "create a repo and push it to URL": git init, git add ., git commit -m "Initial commit", git branch -M main, git remote add origin URL, git push -u origin main.
+- Always copy URLs exactly as the user typed them.
 """

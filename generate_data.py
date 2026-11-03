@@ -27,6 +27,13 @@ COMMIT_MESSAGES = [
     "improve error handling", "add new feature", "clean up code", "update config",
 ]
 BRANCH_NAMES = ["dev", "feature-login", "bugfix", "testing", "experiment", "release", "ui-update", "hotfix"]
+USERS = ["rupnawar761-source", "john-dev", "alice", "student123", "team-alpha", "my-org", "priya-k"]
+REPOS = ["smartgit", "my-project", "todo-app", "portfolio", "ml-experiments", "web-app", "notes", "demo-repo"]
+
+def rand_url():
+    u, r = random.choice(USERS), random.choice(REPOS)
+    return random.choice([f"https://github.com/{u}/{r}.git", f"https://github.com/{u}/{r}"])
+
 FILE_NAMES = ["main.py", "engine.py", "README.md", "train.py", "notes.txt", "prompt.py"]
 
 # ---------- intent definitions ----------
@@ -150,6 +157,39 @@ intent("pull_then_push",
      "update from remote then upload my commits"],
     lambda v: [g("pull"), g("push")])
 
+
+intent("repo_new_push",
+    ["create a repo and push it to {u}", "upload this project to a new repo {u}",
+     "push this project to a brand new github repo {u}", "put my project on github at {u}",
+     "set up a new repo and upload everything to {u}", "publish this folder to {u}"],
+    lambda v: [g("init"), g("add", "."), g("commit", "-m", "Initial commit"),
+               g("branch", "-M", "main"), g("remote", "add", "origin", v["u"]),
+               g("push", "-u", "origin", "main")], needs=["u"])
+
+intent("remote_add",
+    ["connect this repo to {u}", "add remote origin {u}", "link this project to {u}",
+     "set the remote to {u}", "add {u} as the origin"],
+    lambda v: [g("remote", "add", "origin", v["u"])], needs=["u"])
+
+intent("remote_set",
+    ["change the remote url to {u}", "point origin to {u}", "update the origin link to {u}",
+     "switch the remote to {u}"],
+    lambda v: [g("remote", "set-url", "origin", v["u"])], needs=["u"])
+
+intent("clone",
+    ["clone {u}", "download the repo {u}", "copy the repository {u} to my computer",
+     "get the project from {u}"],
+    lambda v: [g("clone", v["u"])], needs=["u"])
+
+intent("branch_main",
+    ["rename my branch to main", "make the branch name main", "call the current branch main"],
+    lambda v: [g("branch", "-M", "main")])
+
+intent("push_upstream",
+    ["push for the first time", "push and set upstream", "first push to origin main",
+     "push this branch to github for the first time"],
+    lambda v: [g("push", "-u", "origin", "main")])
+
 # ---------- generation ----------
 def fill(template, v):
     return template.format(**v)
@@ -160,6 +200,7 @@ def make_vars(needs):
         if "m" in needs: v["m"] = random.choice(COMMIT_MESSAGES)
         if "b" in needs: v["b"] = random.choice(BRANCH_NAMES)
         if "f" in needs: v["f"] = random.choice(FILE_NAMES)
+        if "u" in needs: v["u"] = rand_url()
         if "n" in needs: v["n"] = str(random.choice([3, 5, 10]))
     return v
 
